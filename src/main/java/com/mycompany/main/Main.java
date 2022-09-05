@@ -27,6 +27,7 @@ public class Main {
 //          User u=userDao.getById(2);
 //          u.setName("Ali");
 //          userDao.updateUser(u);
+System.out.println("salam");
 
 
     }
