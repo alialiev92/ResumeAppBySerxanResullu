@@ -29,6 +29,8 @@ public class UserDaoImpl extends AbstractDAO implements UserDaoInter {
                 String surname = rs.getString("surname");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
+                String profileDesc = rs.getString("profile_description");
+                String address=rs.getString("address");
                 int nationalityId = rs.getInt("nationality_id");
                 int birthplaceId = rs.getInt("birthplace_id");
                 String nationalitystr = rs.getString("nationality");
@@ -39,7 +41,7 @@ public class UserDaoImpl extends AbstractDAO implements UserDaoInter {
                 Country birthPlace=new Country(birthplaceId,birthPlacestr,null);
 
 
-                return new User(id, name, surname, email, phone,birthDate,nationality,birthPlace);
+                return new User(id, name, surname, email, phone, profileDesc,address, birthDate, nationality, birthPlace);
     }
     
     
@@ -78,12 +80,15 @@ public class UserDaoImpl extends AbstractDAO implements UserDaoInter {
     public boolean updateUser(User u) {
         try ( Connection c = connect()) {
 
-            PreparedStatement stmt = c.prepareStatement("update user set name=?,surname=?,email=?,phone=? where id=?");
+            PreparedStatement stmt = c.prepareStatement("update user set name=?,surname=?,email=?,phone=?,profile_description=?,address=?,birthdate=? where id=?");
             stmt.setString(1, u.getName());
             stmt.setString(2, u.getSurname());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, u.getPhone());
-            stmt.setInt(5, u.getId());
+            stmt.setString(5, u.getProfileDesc());
+            stmt.setString(6, u.getAddress());
+            stmt.setDate(7, u.getBirthDate());
+            stmt.setInt(8, u.getId());
             return stmt.execute();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -136,11 +141,13 @@ public class UserDaoImpl extends AbstractDAO implements UserDaoInter {
     public boolean addUser(User u) {
         try ( Connection c = connect()) {
 
-            PreparedStatement stmt = c.prepareStatement("insert into user(name,surname,email,phone) values (?,?,?,?)");
+            PreparedStatement stmt = c.prepareStatement("insert into user(name,surname,email,phone,profile_description,address) values (?,?,?,?,?,?)");
             stmt.setString(1, u.getName());
             stmt.setString(2, u.getSurname());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, u.getPhone());
+            stmt.setString(5, u.getProfileDesc());
+            stmt.setString(6, u.getAddress());
             return stmt.execute();
         } catch (Exception ex) {
             ex.printStackTrace();
