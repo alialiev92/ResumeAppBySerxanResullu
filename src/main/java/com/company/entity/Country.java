@@ -4,6 +4,8 @@
  */
 package com.company.entity;
 
+import java.util.Objects;
+
 /**
  *
  * @author group
@@ -54,7 +56,7 @@ public class Country {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + this.id;
+        hash = 29 * hash + this.id;
         return hash;
     }
 
@@ -72,6 +74,12 @@ public class Country {
         final Country other = (Country) obj;
         return this.id == other.id;
     }
+
+   
+
+    
+
+    
 
     
     
