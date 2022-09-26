@@ -12,6 +12,7 @@ import com.mycompany.dao.inter.UserSkillDaoInter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +26,13 @@ public class UserSkillDaoImpl extends AbstractDAO implements UserSkillDaoInter {
 
     public UserSkill getUserSkill(ResultSet rs) throws Exception{
     
+        int userSkillId=rs.getInt("userSkillId");
         int userId=rs.getInt("id");
         int skillId=rs.getInt("skill_id");
         String skillName=rs.getString("skill_name");
         int power=rs.getInt("power");
         
-        return new UserSkill(null,new User(userId),new Skill(skillId,skillName),power);
+        return new UserSkill(userSkillId,new User(userId),new Skill(skillId,skillName),power);
     }
     @Override
     public List<UserSkill> getAllSkillByUserId(int userId) {
@@ -38,7 +40,7 @@ public class UserSkillDaoImpl extends AbstractDAO implements UserSkillDaoInter {
         List<UserSkill> result = new ArrayList<>();
         try ( Connection c = connect()) {
 
-            PreparedStatement stmt = c.prepareStatement("select u.*,us.skill_id,s.name as skill_name,us.power from user_skill us" +
+            PreparedStatement stmt = c.prepareStatement("select us.id as userSkillId,u.*,us.skill_id,s.name as skill_name,us.power from user_skill us" +
                                                         " left join user u on us.user_id=u.id" +
                                                         " left join skill s on us.skill_id=s.id" +
                                                         " where us.user_id=?");
@@ -59,6 +61,54 @@ public class UserSkillDaoImpl extends AbstractDAO implements UserSkillDaoInter {
             ex.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public boolean removeUserSkill(int id) {
+        try ( Connection c = connect()) {
+
+            PreparedStatement stmt = c.prepareStatement("delete from user_skill  where id=?");
+            stmt.setInt(1, id);
+            return stmt.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addUserSkill(UserSkill u) {
+
+        try ( Connection c = connect()) {
+
+            PreparedStatement stmt = c.prepareStatement("insert into user_skill(skill_id,user_id,power) values (?,?,?)");
+            stmt.setInt(1, u.getUser().getId());
+            stmt.setInt(2, u.getSkill().getId());
+            stmt.setInt(3, u.getPower());
+
+            return stmt.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean updateUserSkill(UserSkill u) {
+
+        try ( Connection c = connect()) {
+
+            PreparedStatement stmt = c.prepareStatement("update user_skill set user_id=? skill_id=? power=? where id=?");
+            stmt.setInt(1, u.getUser().getId());
+            stmt.setInt(2, u.getSkill().getId());
+            stmt.setInt(3, u.getPower());
+            stmt.setInt(4, u.getId());
+            return stmt.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
 }

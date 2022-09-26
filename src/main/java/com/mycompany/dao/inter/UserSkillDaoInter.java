@@ -15,6 +15,9 @@ public interface UserSkillDaoInter {
     
     
     public List<UserSkill> getAllSkillByUserId(int userId);
+    public boolean removeUserSkill(int id);
+    public boolean addUserSkill(UserSkill u);
+    public boolean updateUserSkill(UserSkill u);
     
     
 }
